@@ -9,30 +9,27 @@ export function getAccessToken() {
       spotify_expires_in: urlParams.get("expires_in"),
    };
 
-   //Three Possibilities
-   //1. User has just logged. Nothing in local storage, so need to set items from query params
-   //2. There is already a valid localstorage item, so use that
-   //3. 1 hour has passed, so we need to refresh the token and use that
-
-   //3.
-   if (Date.now() - localStorage.getItem("spotify_time_now") > token_expiration) {
-      refreshToken();
+   if (
+      Date.now() - localStorage.getItem("spotify_time_now") > token_expiration &&
+      localStorage.getItem("spotify_time_now") !== null
+   ) {
+      return refreshToken();
    }
 
-   //2.
-   else if (Object.values(queryParams).includes(null)) {
+   if (localStorage.getItem("spotify_access_token") && localStorage.getItem("spotify_access_token") !== "undefined") {
       return localStorage.getItem("spotify_access_token");
    }
 
-   //1.
-   else {
-      localStorage.setItem("spotify_access_token", urlParams.get("access_token"));
-      localStorage.setItem("spotify_refresh_token", urlParams.get("refresh_token"));
-      localStorage.setItem("spotify_expires_in", urlParams.get("expires_in"));
+   if (queryParams["spotify_access_token"]) {
+      for (const property in queryParams) {
+         localStorage.setItem(property, queryParams[property]);
+      }
+
       localStorage.setItem("spotify_time_now", Date.now());
-
       return localStorage.getItem("spotify_access_token");
    }
+
+   return null;
 }
 
 async function refreshToken() {
@@ -43,9 +40,20 @@ async function refreshToken() {
 
       localStorage.setItem("spotify_access_token", data.access_token);
       localStorage.setItem("spotify_time_now", Date.now());
-      window.location.reload(); // Reload the page for localStorage updates to be reflected (?????)
-      return;
+      window.location.reload();
+
+      return localStorage.getItem("spotify_access_token");
    } catch (err) {
       console.error(err);
    }
+}
+
+export function logout() {
+   localStorage.clear();
+   window.location = window.location.origin;
+}
+
+export function capitalizeFirstLetter(str) {
+   const capitalized = str.charAt(0).toUpperCase() + str.slice(1);
+   return capitalized;
 }
