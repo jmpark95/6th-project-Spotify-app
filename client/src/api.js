@@ -1,6 +1,6 @@
 import axios from "axios";
 
-//Bug no.1 this was causing a bug for some reason??
+//Bug no.1 this was causing a bug for some reason?? Sending "Bearer null" every time
 // axios.defaults.baseURL = "https://api.spotify.com/v1";
 // axios.defaults.headers["Authorization"] = `Bearer ${localStorage.getItem("spotify_access_token")}`;
 // axios.defaults.headers["Content-Type"] = "application/json";

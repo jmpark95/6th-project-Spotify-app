@@ -3,10 +3,14 @@ import dotenv from "dotenv";
 import querystring from "node:querystring";
 import axios from "axios";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 const app = express();
 const port = 8000 || process.env.PORT;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const generateRandomString = (length) => {
    let string = "";
    const possibleCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -18,6 +22,11 @@ const generateRandomString = (length) => {
 const state = generateRandomString(16);
 
 app.use(cors());
+app.use(express.static(path.join(__dirname, "dist")));
+
+app.get("/", function (req, res) {
+   res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
 
 app.get("/login", (req, res) => {
    const queryString = querystring.stringify({
@@ -67,10 +76,10 @@ app.get("/callback", async (req, res) => {
             expires_in: data.expires_in,
          });
 
-         res.redirect(`http://localhost:5173/?${queryString}`);
+         res.redirect(`/?${queryString}`);
       } catch (err) {
          console.error(err);
-         res.redirect("http://localhost:5173"); //come back to this later
+         res.redirect("http://minpark-spotifyapp.up.railway.app");
       }
    }
 });
@@ -92,7 +101,7 @@ app.get("/refresh_token", async (req, res) => {
          },
       });
 
-      res.send(data); //might need to come back to this one
+      res.send(data);
    } catch (err) {
       res.send(err);
    }
