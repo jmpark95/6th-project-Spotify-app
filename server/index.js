@@ -79,7 +79,7 @@ app.get("/callback", async (req, res) => {
          res.redirect(`/?${queryString}`);
       } catch (err) {
          console.error(err);
-         res.redirect("http://minpark-spotifyapp.up.railway.app");
+         res.redirect("https://spotifyapp-y0ng.onrender.com");
       }
    }
 });
