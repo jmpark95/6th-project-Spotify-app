@@ -56,7 +56,7 @@ theme = createTheme({
             fontSize: "1.4rem",
          },
       },
-      fontFamily: "Circular Std",
+      fontFamily: ["Poppins, sans-serif"].join(","),
    },
 
    components: {
